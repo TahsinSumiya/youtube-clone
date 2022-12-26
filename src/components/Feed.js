@@ -3,7 +3,18 @@ import { Box, Stack, Typography } from "@mui/material";
 import { MpSharp } from '@mui/icons-material'
 import Sidebar from './Sidebar';
 import Videos from './Videos';
+import { FetchFromAPi } from '../utils/FetchFromApi';
 function Feed() {
+  const [selectedCategory,setSelectedCategory]=useState('New')
+  const [videos,setVideos]=useState([])
+
+
+ useEffect(()=>{
+ FetchFromAPi(`search?part=snippet&q=${selectedCategory}`)
+ .then((data) => setVideos(data.items));
+ 
+ },[selectedCategory]) ;
+
   return (
     <Stack sx={{flexDirection:{
         sx:"column",
@@ -12,7 +23,9 @@ function Feed() {
       <Box sx={{ height: { sx: "auto", md: "92vh" },
        borderRight: "1px solid #3d3d3d",
         px: { sx: 0, md: 2 } }}>
-        <Sidebar/>
+        <Sidebar
+        selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}
+        />
         <Typography className="copyright" variant="body2" sx={{ mt: 1.5, color: "#fff", }}>
           Copyright 2022| by Tahsin Sumiya
         </Typography>
@@ -23,9 +36,9 @@ function Feed() {
         <Typography variant='h5' fontWeight="bold"mb={2}sx={{
             color:'white'
         }}>
-            New<span style={{color:'#F31503'}}>VIDEOS</span>
+            {selectedCategory}<span style={{color:'#F31503'}}>VIDEOS</span>
         </Typography>
-        <Videos/>
+        <Videos videos={videos}/>
       </Box>
     </Stack>
   )
